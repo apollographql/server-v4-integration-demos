@@ -3,14 +3,14 @@ import type {
   BaseContext,
   ContextFunction,
   HTTPGraphQLRequest,
-} from '@apollo/server';
-import type { WithRequired } from '@apollo/utils.withrequired';
+} from "@apollo/server";
+import type { WithRequired } from "@apollo/utils.withrequired";
 import type {
   Handler,
   Context,
   APIGatewayProxyStructuredResultV2,
   APIGatewayProxyEventV2,
-} from 'aws-lambda';
+} from "aws-lambda";
 export interface LambdaContextFunctionArgument {
   event: APIGatewayProxyEventV2;
   context: Context;
@@ -31,7 +31,7 @@ export function lambdaHandler(
 ): LambdaHandler;
 export function lambdaHandler<TContext extends BaseContext>(
   server: ApolloServer<TContext>,
-  options: WithRequired<LambdaHandlerOptions<TContext>, 'context'>,
+  options: WithRequired<LambdaHandlerOptions<TContext>, "context">,
 ): LambdaHandler;
 export function lambdaHandler<TContext extends BaseContext>(
   server: ApolloServer<TContext>,
@@ -57,7 +57,7 @@ export function lambdaHandler<TContext extends BaseContext>(
     try {
       if (!event.body) {
         // assert there's a query string?
-      } else if (event.headers['content-type'] === 'application/json') {
+      } else if (event.headers["content-type"] === "application/json") {
         try {
           parsedBody = JSON.parse(event.body);
         } catch (e: unknown) {
@@ -66,7 +66,7 @@ export function lambdaHandler<TContext extends BaseContext>(
             body: (e as Error).message,
           };
         }
-      } else if (event.headers['content-type'] === 'text/plain') {
+      } else if (event.headers["content-type"] === "text/plain") {
         parsedBody = event.body;
       }
     } catch (error: unknown) {
@@ -92,7 +92,7 @@ export function lambdaHandler<TContext extends BaseContext>(
         // docs on IncomingMessage.headers) and so we don't bother to lower-case
         // them or combine across multiple keys that would lower-case to the
         // same value.
-        headers.set(key, Array.isArray(value) ? value.join(', ') : value);
+        headers.set(key, Array.isArray(value) ? value.join(", ") : value);
       }
     }
 
@@ -110,14 +110,14 @@ export function lambdaHandler<TContext extends BaseContext>(
       });
 
       if (httpGraphQLResponse.completeBody === null) {
-        throw Error('Incremental delivery not implemented');
+        throw Error("Incremental delivery not implemented");
       }
 
       return {
         statusCode: httpGraphQLResponse.statusCode || 200,
         headers: {
           ...Object.fromEntries(httpGraphQLResponse.headers),
-          'content-length': Buffer.byteLength(
+          "content-length": Buffer.byteLength(
             httpGraphQLResponse.completeBody,
           ).toString(),
         },
