@@ -1,48 +1,61 @@
 import { ApolloServer, ApolloServerOptions, BaseContext } from "@apollo/server";
-import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
+// import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
 import {
   CreateServerForIntegrationTestsOptions,
   defineIntegrationTestSuite,
 } from "@apollo/server-integration-testsuite";
-import { createServer, Server } from "http";
+// import { createServer, Server } from "http";
+import type { Server } from "http";
 import type { AddressInfo } from "net";
 import { format } from "url";
-import { lambdaHandler } from "..";
-import { createMockServer as createAPIGatewayMockServer } from "./mockAPIGatewayServer";
+import { fastifyPlugin } from "..";
+import fastify from "fastify";
 
-describe("lambdaHandler", () => {
-  defineIntegrationTestSuite(
-    async function (
-      serverOptions: ApolloServerOptions<BaseContext>,
-      testOptions?: CreateServerForIntegrationTestsOptions,
-    ) {
-      const httpServer = createServer();
-      const server = new ApolloServer({
-        ...serverOptions,
-        plugins: [
-          ...(serverOptions.plugins ?? []),
-          ApolloServerPluginDrainHttpServer({
-            httpServer,
-          }),
-        ],
-      });
+describe("fastifyPlugin", () => {
+  defineIntegrationTestSuite(async function (
+    serverOptions: ApolloServerOptions<BaseContext>,
+    testOptions?: CreateServerForIntegrationTestsOptions,
+  ) {
+    // const httpServer = createServer();
+    const server = new ApolloServer({
+      ...serverOptions,
+      plugins: [
+        ...(serverOptions.plugins ?? []),
+        // ApolloServerPluginDrainHttpServer({
+        //   httpServer,
+        // }),
+      ],
+    });
 
-      const handler = testOptions
-        ? lambdaHandler(server, testOptions)
-        : lambdaHandler(server);
+    const app = fastify();
 
-      httpServer.addListener("request", createAPIGatewayMockServer(handler));
+    await server.start();
+    app.register(fastifyPlugin(server, testOptions));
 
-      await new Promise<void>((resolve) => {
-        httpServer.listen({ port: 0 }, resolve);
-      });
+    // app.get('/', (_request, reply) => {
+    //   reply.send('');
+    // });
 
-      return { server, url: urlForHttpServer(httpServer) };
-    },
-    {
-      serverIsStartedInBackground: true,
-    },
-  );
+    // app.post('/', (_request, reply) => {
+    //   reply.send('');
+    // })
+    
+    // app.listen({ port: 0 }, (_err) => {
+    //   debugger;
+    // });
+    // await new Promise<void>((resolve) => {
+    //   httpServer.listen({ port: 0 }, resolve);
+    // });
+    const url = await app.listen({ port: 0 });
+    
+    return {
+      server,
+      url,
+      async extraCleanup() {
+        await app.close();
+      },
+    };
+  });
 });
 
 // Stolen from apollo server integration tests
