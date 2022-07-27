@@ -1,0 +1,19 @@
+# installed Node modules
+node_modules/
+# compiled output
+dist/
+
+**/package-lock.json
+!/package-lock.json
+
+# TypeScript incremental compilation cache
+tsconfig.tsbuildinfo
+
+# NPM error output debug logs
+npm-debug.log*
+
+# Mac OS
+.DS_Store
+
+# Volta binaries (when using direnv/.envrc)
+.volta
