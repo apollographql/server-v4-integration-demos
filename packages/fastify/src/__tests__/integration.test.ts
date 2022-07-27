@@ -13,9 +13,7 @@ describe("fastifyPlugin", () => {
   ) {
     const server = new ApolloServer({
       ...serverOptions,
-      plugins: [
-        ...(serverOptions.plugins ?? []),
-      ],
+      plugins: [...(serverOptions.plugins ?? [])],
     });
 
     const app = fastify();
@@ -24,7 +22,7 @@ describe("fastifyPlugin", () => {
     app.register(fastifyPlugin(server, testOptions));
 
     const url = await app.listen({ port: 0 });
-    
+
     return {
       server,
       url,
