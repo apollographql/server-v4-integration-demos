@@ -22,9 +22,6 @@
   "engines": {
     "node": ">=16"
   },
-  "publishConfig": {
-    "access": "public"
-  },
   "peerDependencies": {
     "@apollo/server": "^4.0.0-alpha.1"
   }
