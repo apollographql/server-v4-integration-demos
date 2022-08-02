@@ -28,7 +28,7 @@
     "packages/*"
   ],
   "devDependencies": {
-    "@apollo/server-integration-testsuite": "4.0.0-alpha.1",
+    "@apollo/server-integration-testsuite": "4.0.0-alpha.2",
     "@apollo/utils.withrequired": "1.0.0",
     "@jest/types": "28.1.3",
     "@types/aws-lambda": "8.10.101",
