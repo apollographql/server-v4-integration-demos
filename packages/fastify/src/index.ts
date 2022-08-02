@@ -55,9 +55,8 @@ function fastifyHandler<TContext extends BaseContext>(
   options?: LambdaHandlerOptions<TContext>,
 ): FastifyPluginCallback {
   server.assertStarted("fastifyHandler()");
-  
-  return async (fastify) => {
 
+  return async (fastify) => {
     // This `any` is safe because the overload above shows that context can
     // only be left out if you're using BaseContext as your context, and {} is a
     // valid BaseContext.
