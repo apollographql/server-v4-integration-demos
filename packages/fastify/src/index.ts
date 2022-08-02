@@ -70,30 +70,6 @@ function fastifyHandler<TContext extends BaseContext>(
       TContext
     > = options?.context ?? defaultContext;
 
-    fastify.removeContentTypeParser(["application/json"]);
-    fastify.addContentTypeParser(
-      "application/json",
-      { parseAs: "string" },
-      async (_request, body, _done) => {
-        try {
-          return JSON.parse(body as string);
-        } catch (err) {
-          if ((body as string).trim() === "") {
-            return {};
-          }
-          (err as any).statusCode = 400;
-          throw err;
-        }
-      },
-    );
-
-    // This is dumb but it gets the integration testsuite passing. We should
-    // maybe consider relaxing some of the tests in order to accommodate server
-    // frameworks that behave well or better than Apollo Server.
-    fastify.addContentTypeParser("*", (_, __, done) => {
-      done(null, null);
-    });
-
     fastify.addHook("preHandler", async (request, reply) => {
       const headers = new Map<string, string>();
       for (const [key, value] of Object.entries(request.headers)) {
