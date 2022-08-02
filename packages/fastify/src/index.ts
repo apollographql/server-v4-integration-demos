@@ -54,8 +54,9 @@ function fastifyHandler<TContext extends BaseContext>(
   server: ApolloServer<TContext>,
   options?: LambdaHandlerOptions<TContext>,
 ): FastifyPluginCallback {
+  server.assertStarted("fastifyHandler()");
+  
   return async (fastify) => {
-    server.assertStarted("fastifyHandler()");
 
     // This `any` is safe because the overload above shows that context can
     // only be left out if you're using BaseContext as your context, and {} is a
