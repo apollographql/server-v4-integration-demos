@@ -25,15 +25,18 @@ type LambdaHandler = Handler<
   APIGatewayProxyStructuredResultV2
 >;
 
-export function lambdaHandler(
+// Following the naming convention "startAndXYZ" for serverless handlers in the
+// Apollo Server docs so that it's clear the server will be started when this
+// function is called and the user should not call `start` themselves.
+export function startServerAndCreateLambdaHandler(
   server: ApolloServer<BaseContext>,
   options?: LambdaHandlerOptions<BaseContext>,
 ): LambdaHandler;
-export function lambdaHandler<TContext extends BaseContext>(
+export function startServerAndCreateLambdaHandler<TContext extends BaseContext>(
   server: ApolloServer<TContext>,
   options: WithRequired<LambdaHandlerOptions<TContext>, "context">,
 ): LambdaHandler;
-export function lambdaHandler<TContext extends BaseContext>(
+export function startServerAndCreateLambdaHandler<TContext extends BaseContext>(
   server: ApolloServer<TContext>,
   options?: LambdaHandlerOptions<TContext>,
 ): LambdaHandler {
@@ -54,33 +57,19 @@ export function lambdaHandler<TContext extends BaseContext>(
 
   return async function (event, context) {
     let parsedBody: object | string | undefined = undefined;
-    try {
-      if (!event.body) {
-        // assert there's a query string?
-      } else if (event.headers["content-type"] === "application/json") {
-        try {
-          parsedBody = JSON.parse(event.body);
-        } catch (e: unknown) {
-          return {
-            statusCode: 400,
-            body: (e as Error).message,
-          };
-        }
-      } else if (event.headers["content-type"] === "text/plain") {
-        parsedBody = event.body;
+    if (!event.body) {
+      // assert there's a query string?
+    } else if (event.headers["content-type"] === "application/json") {
+      try {
+        parsedBody = JSON.parse(event.body);
+      } catch (e: unknown) {
+        return {
+          statusCode: 400,
+          body: (e as Error).message,
+        };
       }
-    } catch (error: unknown) {
-      // The json body-parser *always* sets req.body to {} if it's unset (even
-      // if the Content-Type doesn't match), so if it isn't set, you probably
-      // forgot to set up body-parser. (Note that this may change in the future
-      // body-parser@2.)
-      // return {
-      //   statusCode: 500,
-      //   body:
-      //     '`event.body` is not set; this probably means you forgot to set up the ' +
-      //     '`body-parser` middleware before the Apollo Server middleware.',
-      // };
-      throw error;
+    } else if (event.headers["content-type"] === "text/plain") {
+      parsedBody = event.body;
     }
 
     const headers = new Map<string, string>();
