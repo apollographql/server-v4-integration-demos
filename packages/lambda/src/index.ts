@@ -28,15 +28,15 @@ type LambdaHandler = Handler<
 // Following the naming convention "startAndXYZ" for serverless handlers in the
 // Apollo Server docs so that it's clear the server will be started when this
 // function is called and the user should not call `start` themselves.
-export function startAndCreateLambdaHandler(
+export function startServerAndCreateLambdaHandler(
   server: ApolloServer<BaseContext>,
   options?: LambdaHandlerOptions<BaseContext>,
 ): LambdaHandler;
-export function startAndCreateLambdaHandler<TContext extends BaseContext>(
+export function startServerAndCreateLambdaHandler<TContext extends BaseContext>(
   server: ApolloServer<TContext>,
   options: WithRequired<LambdaHandlerOptions<TContext>, "context">,
 ): LambdaHandler;
-export function startAndCreateLambdaHandler<TContext extends BaseContext>(
+export function startServerAndCreateLambdaHandler<TContext extends BaseContext>(
   server: ApolloServer<TContext>,
   options?: LambdaHandlerOptions<TContext>,
 ): LambdaHandler {

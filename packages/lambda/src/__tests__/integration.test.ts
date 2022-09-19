@@ -6,10 +6,10 @@ import {
 import { createServer, Server } from "http";
 import type { AddressInfo } from "net";
 import { format } from "url";
-import { startAndCreateLambdaHandler } from "..";
+import { startServerAndCreateLambdaHandler } from "..";
 import { createMockServer as createAPIGatewayMockServer } from "./mockAPIGatewayServer";
 
-describe("startAndCreateLambdaHandler", () => {
+describe("startServerAndCreateLambdaHandler", () => {
   defineIntegrationTestSuite(
     async function (
       serverOptions: ApolloServerOptions<BaseContext>,
@@ -19,8 +19,8 @@ describe("startAndCreateLambdaHandler", () => {
       const server = new ApolloServer(serverOptions);
 
       const handler = testOptions
-        ? startAndCreateLambdaHandler(server, testOptions)
-        : startAndCreateLambdaHandler(server);
+        ? startServerAndCreateLambdaHandler(server, testOptions)
+        : startServerAndCreateLambdaHandler(server);
 
       httpServer.addListener("request", createAPIGatewayMockServer(handler));
 
