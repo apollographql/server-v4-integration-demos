@@ -27,7 +27,7 @@ export interface FastifyHandlerOptions<TContext extends BaseContext> {
 
 export function fastifyHandler(
   server: ApolloServer<BaseContext>,
-  options?: FastifyHandlerOptions<BaseContext>
+  options?: FastifyHandlerOptions<BaseContext>,
 ): RouteHandlerMethod;
 export function fastifyHandler<TContext extends BaseContext>(
   server: ApolloServer<TContext>,
