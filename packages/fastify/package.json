@@ -23,7 +23,7 @@
     "node": ">=16"
   },
   "dependencies": {
-    "fastify-plugin": "^4.0.0"
+    "fastify-plugin": "^5.0.0"
   },
   "peerDependencies": {
     "@apollo/server": "^4.0.0-alpha.2",
